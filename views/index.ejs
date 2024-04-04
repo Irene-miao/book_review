@@ -1,0 +1,112 @@
+<%- include('partials/header.ejs'); -%>
+
+<div class="container">
+    <div class="row text-center">
+        <h1>Books I read</h1>
+        <p>A list of books that I read and wrote reviews about.</p>
+        <% if (locals.error) { %>
+            <p class="error"><%= error %></p>
+            <% } %>
+    </div>
+  
+  
+
+    <section class="row">
+        <div class="d-flex">
+            <h2 class="m-2">List of Books</h2>
+            <form class="m-2" action="/addBook" method="post">
+                <input type="hidden" name="add" value="book" />
+                <button class="btn btn-outline-success" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                  </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                    <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                  </svg></button>
+            </form>
+        </div>
+        
+        <div class="row g-3">
+            <% if (locals.books) { %> 
+                <% books.forEach(function(book){ %>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <img
+                            src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-L.jpg"
+                            height="225"
+                            width="100%" 
+                            alt="<%=book.title%>"      
+                            />
+                            <div class="card-body">
+                                <h5 class="card-title"><%= book.title %></h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary"><%= book.author%></h6>
+                                <p class="card-text"><%= book.synopsis %></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <form action="deleteBook" method="post">
+                                        <input type="hidden" name="deleteBookId" value="<%= book.id%>" />
+                                        <button class="btn btn-sm btn-outline-danger" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                                          </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                                            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                                          </svg></button>
+                                    </form> 
+                                </div>
+                            </div>
+                            
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <h5 class="card-title m-2">Reviews: </h5>
+                                        <form class="col-6 m-2" action="/addReview" method="post">
+                                            <input type="hidden" name="add" value="review" />
+                                            <input type="hidden" name="bookId" value="<%= book.id %>" />
+                                        <button class="btn btn-sm btn-outline-success" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                          </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right-text" viewBox="0 0 16 16">
+                                            <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                                            <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                                          </svg></button>
+                                        </form>
+                                    </div>
+                                    
+                                    <% if (locals.reviews) { %> 
+                                        <% reviews.forEach(function(review){ %> <%
+                                        if (review.book_id === book.id){ %>
+                                    <div class="d-flex  align-items-center">
+                                        <ul>
+                                            <li class="card-text"><%= review.review %></li>
+                                            <div class="btn-group">
+                                            <form  action="/editReview" method="post">
+                                                <input type="hidden" name="edit" value="review" />   
+                                                <input type="hidden" name="editReviewId" value="<%= review.id%>" />
+                                                <button class="btn btn-sm btn-outline-info" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+</svg></button>
+                                            </form>
+                                            <form  action="/deleteReview" method="post">
+                                                <input type="hidden" name="deleteReviewId" value="<%= review.id%>" />
+                                                <button class="btn btn-sm btn-outline-danger" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+  <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+</svg></button>
+                                            </form>
+                                            </div>
+                                            <div class="d-flex align-items-left p-2">
+                                                <h6 class="card-title">Rating:   </h6>
+                                                <p class="card-text"><%= review.rating %></p>
+                                            </div>
+                                        </ul> 
+                                    </div>
+                                    <% } %>
+                            <% }) %>
+                            <% } else { %>
+                            <p>No reviews available</p>
+                            <% } %>
+                                </div>
+                        </div>
+                    </div>
+                <% }) %> 
+            <% } else { %>
+                <p>No book detail available</p>
+            <% } %>
+        </div>  
+    </section>
+</div>
+
+<%- include('partials/footer.ejs'); -%>
