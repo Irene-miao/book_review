@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 //import { createPool } from '@vercel/postgres';
-
+import 'dotenv/config';
 
 const app = express();
 
@@ -43,7 +43,7 @@ async function getReviews(){
 
 
 app.get("/", async(req, res) => {
-
+   
     try {
      const books = await getBooks();
      const reviews = await getReviews();
