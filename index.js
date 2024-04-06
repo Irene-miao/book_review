@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-//import { Pool } from "pg";
+import { Pool } from "pg";
 //import { createPool } from '@vercel/postgres';
 
 
