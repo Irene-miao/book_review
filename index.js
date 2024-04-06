@@ -5,7 +5,7 @@ import pg from "pg";
 import 'dotenv/config';
 
 const app = express();
-
+const PORT = 3000;
 
 // Parse req body
 app.use(bodyParser.urlencoded({ extended: true}));
@@ -140,6 +140,6 @@ res.redirect("/");
 });
 
 
-app.listen(process.env.POSTGRES_PORT, ()=> {
-    console.log(`Server running on port ${process.env.POSTGRES_PORT}`);
+app.listen(PORT, ()=> {
+    console.log(`Server running on port ${PORT}`);
 })
