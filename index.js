@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 //import { Pool } from "pg";
-import { createPool } from '@vercel/postgres';
+//import { createPool } from '@vercel/postgres';
 
 
 const app = express();
@@ -18,27 +18,27 @@ app.use(express.static("public"));
 
 
 // Connect to postgres database
-const pool = createPool({
+const pool = new Pool({
     connectionString: process.env.POSTGRES_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
   });
-pool.connect((err)=> {
-    if (err) throw err
-    console.log("Connect to PostgreSQL successfully")
-});
+const client = await pool.connect();
 
 
 
 // Get all books 
 async function getBooks(){
-const { rows } = await pool.sql`select * from books;`;
-return rows;
+const result = await client.query('select * from books');
+return result.rows;
 
 }
 
 // Get all reviews
 async function getReviews(){
-    const { rows } = await pool.sql`select * from reviews:`;
-    return rows;
+    const result = await client.query('select * from reviews');
+    return result.rows;
    
 }
 
@@ -74,8 +74,8 @@ app.post("/addBook", async (req, res) => {
     const synopsis = req.body.synopsis;
     const isbn = req.body.isbn;
    
-   const { rows } = await pool.sql`insert into books(title, author, synopsis, isbn) values ($1, $2, $3, $4) returning id", [title, author, synopsis, isbn];`;
-    const reviewId = rows[0].id;
+   const result = await client.query('insert into books(title, author, synopsis, isbn) values ($1, $2, $3, $4) returning id", [title, author, synopsis, isbn]');
+    const reviewId = result.rows[0].id;
   
    if (reviewId){
         res.redirect("/");
@@ -98,9 +98,9 @@ app.post("/addReview", async (req, res)=> {
         const bookId = parseInt(req.body.bookId);
         const review = req.body.review;
         const rating = parseInt(req.body.rating);
-        const { rows } = await pool.sql`insert into reviews(book_id, review, rating) values($1, $2, $3) returning id", [bookId, review, rating];`;
-        console.log(rows);
-        const reviewId = rows[0].id;
+        const result = await client.query('insert into reviews(book_id, review, rating) values($1, $2, $3) returning id", [bookId, review, rating]');
+        console.log(result.rows);
+        const reviewId = result.rows[0].id;
         if (reviewId) {
             res.redirect("/")
         }
@@ -122,21 +122,21 @@ if (req.body.edit === "review"){
     const review = req.body.review;
     const rating = parseInt(req.body.rating);
     const reviewId = parseInt(req.body.reviewId);
-    await pool.sql`update reviews set review=$1, rating=$2 where id = $3", [review, rating, reviewId];`;
+    await client.query('update reviews set review=$1, rating=$2 where id = $3", [review, rating, reviewId]');
     res.redirect("/");
 }
 });
 
 app.post("/deleteBook", async (req, res)=> {
 const deleteBookId = req.body.deleteBookId;
-await pool.sql`delete from books where id = $1", [deleteBookId];`;
+await client.query('delete from books where id = $1", [deleteBookId]');
 res.redirect("/");
 });
 
 app.post("/deleteReview", async (req, res)=>{
 console.log(req.body);
 const deleteReviewId = req.body.deleteReviewId;
-await pool.sql`delete from reviews where id = $1", [deleteReviewId];`;
+await client.query('delete from reviews where id = $1", [deleteReviewId]');
 res.redirect("/");
 });
 
