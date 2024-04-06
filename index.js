@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { Pool } from "pg";
+import pg from "pg";
 //import { createPool } from '@vercel/postgres';
 
 
@@ -18,6 +18,7 @@ app.use(express.static("public"));
 
 
 // Connect to postgres database
+const { Pool } = pg;
 const pool = new Pool({
     connectionString: process.env.POSTGRES_URL,
     ssl: {
