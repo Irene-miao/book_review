@@ -76,7 +76,7 @@ app.get("/", async(req, res) => {
 app.post("/addBook", async (req, res) => {
  
    if (req.body.add === "book"){
-    res.render("newBook.ejs");
+    res.render("addBook.ejs");
 } else {
     const title = req.body.title;
     const author = req.body.author;
@@ -98,7 +98,7 @@ app.post("/addBook", async (req, res) => {
 app.post("/addReview", async (req, res)=> {
   
     if (req.body.add === "review") {
-        res.render("newReview.ejs", {
+        res.render("addReview.ejs", {
             bookId: req.body.bookId
             
         });
@@ -122,7 +122,7 @@ app.post("/editReview", async (req, res) => {
 console.log(req.body);
 const editReviewId = req.body.editReviewId;
 if (req.body.edit === "review"){
-    res.render("newReview.ejs", {
+    res.render("addReview.ejs", {
         reviewId : editReviewId
         
     })
