@@ -83,7 +83,7 @@ app.post("/addBook", async (req, res) => {
     const synopsis = req.body.synopsis;
     const isbn = req.body.isbn;
    
-   const result = await client.query('insert into books(title, author, synopsis, isbn) values ($1, $2, $3, $4) returning id", [title, author, synopsis, isbn]');
+   const result = await client.query("insert into books(title, author, synopsis, isbn) values ($1, $2, $3, $4) returning id", [title, author, synopsis, isbn]);
     const reviewId = result.rows[0].id;
   
    if (reviewId){
@@ -107,7 +107,7 @@ app.post("/addReview", async (req, res)=> {
         const bookId = parseInt(req.body.bookId);
         const review = req.body.review;
         const rating = parseInt(req.body.rating);
-        const result = await client.query('insert into reviews(book_id, review, rating) values($1, $2, $3) returning id", [bookId, review, rating]');
+        const result = await client.query("insert into reviews(book_id, review, rating) values($1, $2, $3) returning id", [bookId, review, rating]);
         console.log(result.rows);
         const reviewId = result.rows[0].id;
         if (reviewId) {
@@ -131,21 +131,21 @@ if (req.body.edit === "review"){
     const review = req.body.review;
     const rating = parseInt(req.body.rating);
     const reviewId = parseInt(req.body.reviewId);
-    await client.query('update reviews set review=$1, rating=$2 where id = $3", [review, rating, reviewId]');
+    await client.query("update reviews set review=$1, rating=$2 where id = $3", [review, rating, reviewId]);
     res.redirect("/");
 }
 });
 
 app.post("/deleteBook", async (req, res)=> {
 const deleteBookId = req.body.deleteBookId;
-await client.query('delete from books where id = $1", [deleteBookId]');
+await client.query("delete from books where id = $1", [deleteBookId]);
 res.redirect("/");
 });
 
 app.post("/deleteReview", async (req, res)=>{
 console.log(req.body);
 const deleteReviewId = req.body.deleteReviewId;
-await client.query('delete from reviews where id = $1", [deleteReviewId]');
+await client.query("delete from reviews where id = $1", [deleteReviewId]);
 res.redirect("/");
 });
 
