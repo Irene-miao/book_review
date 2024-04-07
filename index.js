@@ -3,17 +3,27 @@ import bodyParser from "body-parser";
 import pg from "pg";
 //import { createPool } from '@vercel/postgres';
 import 'dotenv/config';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
 
 const app = express();
 const PORT = 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+console.log(__dirname);
+const viewPath = path.join(__dirname, 'public', 'views');
+console.log(viewPath);
+
 
 // Parse req body
 app.use(bodyParser.urlencoded({ extended: true}));
 
 app.set('view engine', 'ejs');
+app.set('views', viewPath);
 
 // serve static files
-app.use(express.static("public"));
+app.use(express.static(viewPath));
 
 
 
