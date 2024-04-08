@@ -1,7 +1,7 @@
 <div id="newReview">
     <% if (locals.bookId) { %>
         <h2>Add a new book review</h2>
-        <form action="/addReview" method="post">
+        <form action="/reviews/add" method="post">
             <input type="hidden" name="bookId" value="<%= bookId %>" />
             <label for="review">Review</label>
             <textarea id="review" placeholder="Type in book review" name="review" rows="10" cols="30"></textarea>
@@ -18,7 +18,7 @@
         </form>
    <% } else { %>
       <h2>Add a new book review</h2>
-        <form action="/editReview" method="post">
+        <form action="/reviews/edit" method="post">
             <input type="hidden" name="reviewId" value="<%= reviewId%>" />
             <label for="review">Review</label>
             <textarea id="review" placeholder="Type in book review" name="review" rows="10" cols="30"></textarea>

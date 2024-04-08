@@ -73,7 +73,7 @@ app.get("/", async(req, res) => {
 
 
 
-app.post("/addBook", async (req, res) => {
+app.post("/books/add", async (req, res) => {
  
    if (req.body.add === "book"){
     res.render("addBook.ejs");
@@ -95,7 +95,7 @@ app.post("/addBook", async (req, res) => {
 });
 
 
-app.post("/addReview", async (req, res)=> {
+app.post("/reviews/add", async (req, res)=> {
   
     if (req.body.add === "review") {
         res.render("addReview.ejs", {
@@ -118,7 +118,7 @@ app.post("/addReview", async (req, res)=> {
 });
 
 
-app.post("/editReview", async (req, res) => {
+app.post("/reviews/edit", async (req, res) => {
 console.log(req.body);
 const editReviewId = req.body.editReviewId;
 if (req.body.edit === "review"){
@@ -136,13 +136,13 @@ if (req.body.edit === "review"){
 }
 });
 
-app.post("/deleteBook", async (req, res)=> {
+app.post("/books/delete", async (req, res)=> {
 const deleteBookId = req.body.deleteBookId;
 await client.query("delete from books where id = $1", [deleteBookId]);
 res.redirect("/");
 });
 
-app.post("/deleteReview", async (req, res)=>{
+app.post("/reviews/delete", async (req, res)=>{
 console.log(req.body);
 const deleteReviewId = req.body.deleteReviewId;
 await client.query("delete from reviews where id = $1", [deleteReviewId]);
