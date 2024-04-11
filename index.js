@@ -73,7 +73,7 @@ app.get("/", async(req, res) => {
 
 
 
-app.post("/books/add", async (req, res) => {
+app.post("/books", async (req, res) => {
  
    if (req.body.add === "book"){
     res.render("addBook.ejs");
@@ -95,7 +95,7 @@ app.post("/books/add", async (req, res) => {
 });
 
 
-app.post("/reviews/add", async (req, res)=> {
+app.post("/reviews", async (req, res)=> {
   
     if (req.body.add === "review") {
         res.render("addReview.ejs", {
@@ -118,31 +118,37 @@ app.post("/reviews/add", async (req, res)=> {
 });
 
 
-app.post("/reviews/edit", async (req, res) => {
+app.post("/reviews/:id", async (req, res) => {
+    const toEditReviewId = req.params.id;
+    console.log("ReviewId: "+ toEditReviewId);
 console.log(req.body);
-const editReviewId = req.body.editReviewId;
+//const editReviewId = req.body.editReviewId;
 if (req.body.edit === "review"){
     res.render("addReview.ejs", {
-        reviewId : editReviewId
+        reviewId : toEditReviewId
         
     })
 } else {
     console.log(req.body);
     const review = req.body.review;
     const rating = parseInt(req.body.rating);
-    const reviewId = parseInt(req.body.reviewId);
-    await client.query("update reviews set review=$1, rating=$2 where id = $3", [review, rating, reviewId]);
+    //const reviewId = parseInt(req.body.reviewId);
+    const editedReviewId = parseInt(toEditReviewId);
+    console.log(editedReviewId);
+    await client.query("update reviews set review=$1, rating=$2 where id = $3", [review, rating, editedReviewId]);
     res.redirect("/");
 }
 });
 
-app.post("/books/delete", async (req, res)=> {
+app.post("/books", async (req, res)=> {
+   
 const deleteBookId = req.body.deleteBookId;
 await client.query("delete from books where id = $1", [deleteBookId]);
 res.redirect("/");
 });
 
-app.post("/reviews/delete", async (req, res)=>{
+app.post("/reviews", async (req, res)=>{
+   
 console.log(req.body);
 const deleteReviewId = req.body.deleteReviewId;
 await client.query("delete from reviews where id = $1", [deleteReviewId]);
