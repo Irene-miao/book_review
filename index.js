@@ -57,14 +57,14 @@ app.get("/", async(req, res) => {
     try {
      const books = await getBooks();
      const reviews = await getReviews();
-    console.log(books);
-    console.log(reviews);
+    //console.log(books);
+    //console.log(reviews);
      res.render("index.ejs", {
         books: books,
         reviews: reviews
      })
     }catch(err){
-        console.log(err);
+        //console.log(err);
         res.render("index.ejs", {
             error: "Failure retrieving resource" + err.stack
         })
@@ -83,7 +83,7 @@ app.post("/books", async (req, res) => {
     const synopsis = req.body.synopsis;
     const isbn = req.body.isbn;
    
-   const result = await client.query("insert into books(title, author, synopsis, isbn) values ($1, $2, $3, $4) returning id", [title, author, synopsis, isbn]);
+   const result = await client.query('insert into books(title, author, synopsis, isbn) values ($1, $2, $3, $4) returning id', [title, author, synopsis, isbn]);
     const reviewId = result.rows[0].id;
   
    if (reviewId){
@@ -103,12 +103,12 @@ app.post("/reviews", async (req, res)=> {
             
         });
     } else {
-        console.log(req.body);
+        //console.log(req.body);
         const bookId = parseInt(req.body.bookId);
         const review = req.body.review;
         const rating = parseInt(req.body.rating);
-        const result = await client.query("insert into reviews(book_id, review, rating) values($1, $2, $3) returning id", [bookId, review, rating]);
-        console.log(result.rows);
+        const result = await client.query('insert into reviews(book_id, review, rating) values($1, $2, $3) returning id', [bookId, review, rating]);
+       // console.log(result.rows);
         const reviewId = result.rows[0].id;
         if (reviewId) {
             res.redirect("/")
@@ -119,41 +119,44 @@ app.post("/reviews", async (req, res)=> {
 
 
 app.post("/reviews/:id", async (req, res) => {
-    const toEditReviewId = req.params.id;
-    console.log("ReviewId: "+ toEditReviewId);
-console.log(req.body);
+    const reviewId = req.params.id;
+    //console.log("ReviewId: "+ toEditReviewId);
+//console.log(req.body);
 //const editReviewId = req.body.editReviewId;
 if (req.body.edit === "review"){
     res.render("addReview.ejs", {
-        reviewId : toEditReviewId
+        reviewId : reviewId
         
     })
+} else if (req.body.delete === "review") {
+   const deleteReviewId = parseInt(reviewId);
+    //console.log(deleteReviewId);
+ 
+
+ await client.query('delete from reviews where id = $1', [deleteReviewId]);
+ res.redirect("/");
+
 } else {
-    console.log(req.body);
+    //console.log(req.body);
     const review = req.body.review;
     const rating = parseInt(req.body.rating);
     //const reviewId = parseInt(req.body.reviewId);
-    const editedReviewId = parseInt(toEditReviewId);
-    console.log(editedReviewId);
-    await client.query("update reviews set review=$1, rating=$2 where id = $3", [review, rating, editedReviewId]);
+    const editedReviewId = parseInt(reviewId);
+    //console.log(editedReviewId);
+    await client.query('update reviews set review=$1, rating=$2 where id = $3', [review, rating, editedReviewId]);
     res.redirect("/");
 }
 });
 
-app.post("/books", async (req, res)=> {
-   
-const deleteBookId = req.body.deleteBookId;
-await client.query("delete from books where id = $1", [deleteBookId]);
+app.post("/books/:id", async (req, res)=> {
+   const deleteBookId = parseInt(req.params.id);
+//const deleteBookId = parseInt(req.body.deleteBookId);
+//console.log(deleteBookId);
+await client.query('delete from books where id = $1', [deleteBookId]);
 res.redirect("/");
 });
 
-app.post("/reviews", async (req, res)=>{
-   
-console.log(req.body);
-const deleteReviewId = req.body.deleteReviewId;
-await client.query("delete from reviews where id = $1", [deleteReviewId]);
-res.redirect("/");
-});
+
 
 
 app.listen(PORT, ()=> {
